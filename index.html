@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Race Results (prototype)</title>
+    <link href="https://fonts.googleapis.com/css?family=Archivo+Narrow:400,500,600" rel="stylesheet">
+
+</head>
+<style>
+    body{
+        font-family: 'Archivo Narrow', sans-serif;
+
+    }
+    h1{
+         font-family: 'Archivo Narrow', sans-serif;
+    }
+    p{
+          font-family: 'Archivo Narrow', sans-serif;
+    }
+
+    .sb{
+               transform: skew(47deg, 1deg);
+    -webkit-transform: skew(-20deg, 38deg);
+    -moz-transform: skew(47deg, 1deg);
+    -o-transform: skew(47deg, 1deg);
+    -ms-transform: skew(47deg, 1deg);
+    width: 2px;
+    height: 78px;
+    background: white;
+    position: absolute;
+    top: -12px;
+    right: 15px;
+    }
+
+    .tickercontainer{
+        height:200px !important;
+
+    }
+
+    .ticker .competitor{
+        width:200px;
+        background:#1a1a1a;
+        height:150px;
+    }
+    
+    .ticker {
+        padding:0;
+        margin:0;
+        list-style: none;
+        display: block;
+        width:100%;
+        height:200px;
+    }
+    
+    .ticker li{
+            /*height:150px;*/
+        width:200px;
+        line-height:20px !important;
+        position: relative;
+    }
+    .ticker li div{
+        /*height:auto;*/
+    }
+
+    .name{
+            height: 50px;
+    position: absolute;
+    left: 62px;
+    top: 9px;
+    line-height: 16px;
+    width: 126px;
+    color: #fafafa;
+    font-size: 14px;
+         font-family: 'Archivo Narrow', sans-serif;
+    }
+
+    .name span{
+        white-space: normal !important;
+    }
+
+    .startpos{
+    position: absolute;
+    bottom: 40px;
+    left: 7px;
+    width: 200px;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    background: #469aad;
+     font-family: 'Archivo Narrow', sans-serif;
+    }
+
+    .interval{
+        position: absolute;
+    bottom: 60px;
+    left: 7px;
+    width: 200px;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    background: #1b1b1b;
+              font-family: 'Archivo Narrow', sans-serif;
+
+    }
+
+    .finpos{
+         position: absolute;
+    left: 7px;
+    top: 0px;
+    background: #8f5ca9;
+    padding: 15px 11px;
+    /* width: 15px; */
+    /* height: 15px; */
+    display: block;
+    /* max-width: 50px; */
+    text-align: center;
+    width: 26px;
+     font-family: 'Archivo Narrow', sans-serif;
+
+    }
+    .finpos span{
+        color:#fff;
+        font-size:20px;
+        display: block;
+        
+        text-align: center;
+    }
+
+    .car{
+    position: absolute;
+    bottom: 80px;
+    left: 7px;
+    width: 200px;
+    color: #111;
+    font-size: 12px;
+    text-align: center;
+    background: #fafafa;
+     font-family: 'Archivo Narrow', sans-serif;
+    }
+
+    .carclass{
+position: absolute;
+    bottom: 20px;
+    left: 7px;
+    width: 200px;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    background: #35b8d6;
+     font-family: 'Archivo Narrow', sans-serif;
+    }
+
+    .irating{
+    position: absolute;
+    bottom: 0px;
+    left: 7px;
+    width: 200px;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    background: #00a2c7;
+     font-family: 'Archivo Narrow', sans-serif;
+
+    }
+
+    .race-info{
+        background: #111;
+    }
+
+    .race-info p{
+           margin-bottom: 5px;
+    text-align: center;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    padding: 6px;
+        border-bottom: 3px solid #ea4242;
+    }
+
+    .race-info p span{
+        font-family: 'Archivo Narrow', sans-serif;
+        font-weight:600;
+    }
+    
+
+</style>
+<body>
+    
+    <div>
+        <h1>Race Results - <button id="stop-newsticker2">Stop ticker</button></h1>
+        <div >
+            <div class="race-info">
+                
+            </div>
+            <ul class="ticker">
+            </ul>
+        </div>
+      
+        
+    </div>
+
+<script src="jquery.js"></script>
+<script src="jquery.webticker.min.js"></script>
+
+    
+    <script>
+        
+          
+        $("#stop-newsticker2").click(function(){
+        $(".ticker").webTicker('stop');
+    });
+        
+        function loadTicker(){
+                $('.ticker').webTicker({
+                    height:'75px', 
+                    duplicate:true, 
+                    rssfrequency:0, 
+                    startEmpty:false, 
+                    hoverpause:false, 
+                    transition: "ease"
+                });
+            }
+        
+        $(document).ready(function(){
+            var race = new Array();
+            var competitor = new Array('','');
+
+
+             $.ajax({ 
+                type: 'GET', 
+                url: 'data/race-data.json', 
+                data: { get_param: 'value' }, 
+                success: function (data) {
+
+                i = -1;
+                j = -1;
+
+                var name;
+                var startpos;
+                var finpos;
+                var car;
+                var carclass;
+                var irating;
+                var interval;
+
+                var racetime = data[0]["Start Time"];
+                var year     = data[0]["Season Year"];
+                var sof      = data[0]["Strength of  Field"];
+                var track    = data[0]["Track"];
+                var series   = data[0]["Series"];
+
+                                // console.log(racetime);
+
+                $('.race-info').append('<p>'+ track +'&nbsp;&nbsp;<span>/</span>&nbsp;&nbsp;' + series + ' <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span> ' + racetime +' </p>');
+
+                $.each(data[1], function (index, value) {
+                    console.log(data[1]);
+
+                    i++;
+                    name     = data[1][i]["Name"];
+                    finpos   = data[1][i]["Fin Pos"];
+                    startpos = data[1][i]["Start Pos"];
+                    car      = data[1][i]["Car"];
+                    carclass = data[1][i]["Car Class"];
+                    irating  = data[1][i]["New iRating"];
+                    interval = data[1][i]["Interval"];
+                    if(interval == "-00.000"){
+                        interval = "Winner";
+                    }
+
+                    $('.ticker').append('<li><div class="sb"></div><div class="competitor"><div class="name"><span>'+ name +'</span></div><div class="car"><span>'+ car +'</span></div><div class="finpos"><span>'+ finpos +'</span></div><div class="startpos"><span>Started: '+ startpos +'</span></div><div class="car"><span></span></div><div class="carclass"><span>'+ carclass +'</span></div><div class="irating"><span>iR: '+ irating +'</span></div><div class="interval"><span>'+ interval +'</span></div></div></li>');
+
+                    });
+                    
+                    loadTicker();
+                }    
+             });
+            
+        });
+  
+    </script>
+</body>
+
+</html>
