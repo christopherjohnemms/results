@@ -6,7 +6,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Jelson Homes</title>
+  <title></title>
     <link href="https://fonts.googleapis.com/css?family=Archivo+Narrow:400,500,600" rel="stylesheet">
 
 </head>
@@ -42,7 +42,7 @@
 }
 
     .tickercontainer{
-        height:200px !important;
+        height:150px !important;
 
     }
 
@@ -191,6 +191,51 @@ position: absolute;
         font-weight:600;
     }
 
+
+    .race-info-two{
+        background: #111;
+    }
+
+    .race-info-two p{
+           margin-bottom: 5px;
+    text-align: center;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    padding: 6px;
+        border-bottom: 3px solid #35b8d6;
+    }
+
+    .race-info-two p span{
+        font-family: 'Archivo Narrow', sans-serif;
+        font-weight:600;
+    }
+
+
+    .race-info-three{
+        background: #111;
+    }
+
+    .race-info-three p{
+           margin-bottom: 5px;
+    text-align: center;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    padding: 6px;
+        border-bottom: 3px solid #33c521;
+    }
+
+    .race-info-three p span{
+        font-family: 'Archivo Narrow', sans-serif;
+        font-weight:600;
+    }
+
+
+
+    
+
+
     .audi{
             width: 28px;
             height: 10px;
@@ -217,6 +262,15 @@ position: absolute;
             background-size: cover;
             margin-right: 5px;
     }
+
+    .ferrari{
+        width: 28px;
+            height: 10px;
+            display: inline-block;
+            background-image: url(img/ferarri.png);
+            background-size: cover;
+            margin-right: 5px;
+    }
     
      .pos-diff{
             width: 20px;
@@ -231,6 +285,90 @@ position: absolute;
     text-align: center;
     }
 
+
+    .race-results-extra{
+        width:1200px;
+        margin:20px auto;
+        background: #ccc;
+        clear: both;
+    }
+    .race-results-extra .left{
+        float:left;
+        width:40%;
+    }
+    .race-results-extra .center{
+        width:10%;
+        float:left;
+    }
+    .race-results-extra .right{
+        float:left;
+        width:40%;
+    }
+
+    .laps-title{
+            margin-bottom: 5px;
+    text-align: center;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    padding: 6px;
+    border-bottom: 3px solid #ea4242;
+    }
+
+    .laps{
+        width:100%;background:#111;
+        padding:10px 30px;
+    }
+    .laps td{
+        color:#fff;
+    }
+    .laps td:first-child{
+        width:46%;
+    }
+    .laps tr td:last-child{
+        text-align: right;
+    }
+
+    .cars-list{
+        width:100%;
+    }
+
+    .cars-list .row{
+        width:100%;
+        clear:both;
+    }
+
+    .cars-list .row .carblock{
+        width:50%;
+        padding-top:25px;
+        padding-bottom:25px;
+        float:left;
+        background:#111;
+        color:#fff;
+        text-align: center;
+    }
+    
+    .cars-list .row .carblock:last-child{
+    }
+
+    .cars-list .row .carblock span{
+        font-size:30px;
+    }
+    .cars-list .row .carblock:nth-child(2n){
+                background:#222;
+
+    } 
+    .cars-list .row .carblock:nth-child(3n){
+                background:#333;
+
+    } 
+    .cars-list .row .carblock:nth-child(4n){
+                background:#444;
+
+    } 
+ 
+}
+
 </style>
 <body>
     
@@ -243,12 +381,41 @@ position: absolute;
             <ul class="ticker">
             </ul>
         </div>
-      
-        
+    </div>
+    <div class="race-results-extra">
+        <div class="left">
+            <div>
+                <div class="race-info-two">
+                
+                    <p>Fastest laps</p>
+                    </div>
+                <table class="laps">
+                    
+                </table>
+
+            </div>    
+        </div>
+        <div class="center">
+            &nbsp;
+        </div>
+        <div class="right">
+            <div>
+                <div class="race-info-three">
+                
+                    <p>Most popular cars</p>
+                    </div>
+                    <div class="cars-list">
+                        
+
+                    </div>
+
+            </div>  
+        </div>
     </div>
 
 <script src="jquery.js"></script>
 <script src="jquery.webticker.min.js"></script>
+
 
     
     <script>
@@ -261,11 +428,12 @@ position: absolute;
         function loadTicker(){
                 $('.ticker').webTicker({
                     height:'75px', 
+                    speed:100,
                     duplicate:true, 
                     rssfrequency:0, 
-                    startEmpty:false, 
-                    hoverpause:false, 
-                    transition: "ease"
+                    startEmpty:true, 
+                    hoverpause:true, 
+                    transition: "linear"
                 });
             }
         
@@ -273,15 +441,18 @@ position: absolute;
             var race = new Array();
             var competitor = new Array('','');
 
+            var laps = [];
+            var cars_array = [];
+
 
              $.ajax({ 
                 type: 'GET', 
                 url: 'data/race-data.json', 
                 data: { get_param: 'value' }, 
                 success: function (data) {
-
+                // console.log(data);
                 i = -1;
-                j = -1;
+                
 
                 var name;
                 var startpos;
@@ -293,7 +464,7 @@ position: absolute;
                 var carlogo;
                 var position_difference;
                 var pos_indicator;
-            
+                var fastest_lap;
 
                 var racetime = data[0]["Start Time"];
                 var year     = data[0]["Season Year"];
@@ -301,12 +472,16 @@ position: absolute;
                 var track    = data[0]["Track"];
                 var series   = data[0]["Series"];
 
-                                // console.log(racetime);
+                var car_count_merc = 0;
+                var car_count_bmw = 0;
+                var car_count_audi = 0;
+                var car_count_ferrari = 0;
+
 
                 $('.race-info').append('<p>'+ track +'&nbsp;&nbsp;<span>/</span>&nbsp;&nbsp;' + series + ' <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span> ' + racetime +' </p>');
 
                 $.each(data[1], function (index, value) {
-                    console.log(data[1]);
+                    // console.log(data[1]);
 
                     i++;
                     name     = data[1][i]["Name"];
@@ -316,6 +491,7 @@ position: absolute;
                     carclass = data[1][i]["Car Class"];
                     irating  = data[1][i]["New iRating"];
                     interval = data[1][i]["Interval"];
+                    fastest_lap = data[1][i]["Fastest Lap Time"];
 
                     position_difference = startpos - finpos;
                     if(position_difference < 0){
@@ -330,8 +506,6 @@ position: absolute;
                         pos_indicator = "green";
                     }
 
-
-
                     if(interval == "-00.000"){
                         interval = "Winner";
                     }
@@ -339,22 +513,56 @@ position: absolute;
                     str = car;
                     if (str.toLowerCase().indexOf("mercedes") >= 0){
                         carlogo = "merc";
+                        car_count_merc++;
 
                     }else if(str.toLowerCase().indexOf("audi") >= 0){
                         carlogo = "audi";
+                        car_count_audi++;
 
                     }else if(str.toLowerCase().indexOf("bmw") >= 0){
                         carlogo = "bmw";
+                        car_count_bmw++;
+                    }
+                    else if(str.toLowerCase().indexOf("ferrari") >= 0){
+                        carlogo = "ferrari";
+                        car_count_ferrari++;
                     }
 
 
                     $('.ticker').append('<li><div class="sb '+ pos_indicator +'"></div><div class="competitor"><div class="name"><span>'+ name +'</span></div><div class="car"><span><div class="'+ carlogo +'"></div>'+ car +'</span></div><div class="finpos"><span>'+ finpos +'</span></div><div class="startpos"><span>Started: '+ startpos +'</span></div><div class="car"><span></span></div><div class="carclass"><span>'+ carclass +'</span></div><div class="irating"><span>iR: '+ irating +'</span></div><div class="interval"><span>'+ interval +'</span></div><div class="pos-diff"><span>'+ position_difference +'</span></div></div></li>');
 
+
+                    laps.push({'Name': name, 'Lap Time': fastest_lap});
+
+                    
+
+
                     });
+
+                     $('.cars-list').append('<div class="row"><div class="carblock">Mercedes<br /><span> '+ car_count_merc +'</span></div><div class="carblock">BMW<br /><span>'+ car_count_bmw +'</span></div><div class="carblock">Audi<br /><span>'+ car_count_audi +'</span></div><div class="carblock">Ferrari<br /><span>'+ car_count_ferrari +'</span></div></div>');
                     
                     loadTicker();
+                    j = -1;
+                    $.each(laps, function (index, value) {
+                        j++;
+                        console.log(laps);
+                        var name = laps[j]["Name"];
+                        var time = laps[j]["Lap Time"];
+                        var row = "<tr><td>"+ name +"</td><td>"+ time +"</td></tr>";
+                        $('table.laps').append(row);
+                    });
+                    
+
                 }    
+
+
              });
+                
+
+
+
+
+             console.log(cars_array);
             
         });
   
