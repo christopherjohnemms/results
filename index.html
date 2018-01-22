@@ -6,7 +6,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Race Results (prototype)</title>
+  <title>Jelson Homes</title>
     <link href="https://fonts.googleapis.com/css?family=Archivo+Narrow:400,500,600" rel="stylesheet">
 
 </head>
@@ -22,19 +22,24 @@
           font-family: 'Archivo Narrow', sans-serif;
     }
 
-    .sb{
-               transform: skew(47deg, 1deg);
-    -webkit-transform: skew(-20deg, 38deg);
-    -moz-transform: skew(47deg, 1deg);
-    -o-transform: skew(47deg, 1deg);
-    -ms-transform: skew(47deg, 1deg);
-    width: 2px;
-    height: 78px;
-    background: white;
-    position: absolute;
-    top: -12px;
-    right: 15px;
-    }
+    .sb {
+       position: absolute;
+    top: 19px;
+    right: 7px;
+    width: 0;
+    height: 0;
+    text-indent: -9999px;
+    border-bottom: 32px solid #ea4242;
+    border-left: 40px solid transparent;
+}
+
+.red{
+    border-bottom-color: #ea4242;
+}
+
+.green{
+    border-bottom-color: #48a748 !important;
+}
 
     .tickercontainer{
         height:200px !important;
@@ -185,7 +190,46 @@ position: absolute;
         font-family: 'Archivo Narrow', sans-serif;
         font-weight:600;
     }
+
+    .audi{
+            width: 28px;
+            height: 10px;
+            display: inline-block;
+            background-image: url(img/audi.png);
+            background-size: cover;
+            margin-right: 5px;
+    }
+
+    .merc{
+        width: 28px;
+            height: 10px;
+            display: inline-block;
+            background-image: url(img/mercedes.png);
+            background-size: cover;
+            margin-right: 5px;
+    }
+
+    .bmw{
+        width: 28px;
+            height: 10px;
+            display: inline-block;
+            background-image: url(img/bmw.png);
+            background-size: cover;
+            margin-right: 5px;
+    }
     
+     .pos-diff{
+            width: 20px;
+    height: 21px;
+    background: transparent;
+    color: #fff;
+    position: absolute;
+    z-index: 1000;
+    top: 31px;
+    right: 11px;
+    font-weight:lighter;
+    text-align: center;
+    }
 
 </style>
 <body>
@@ -246,6 +290,10 @@ position: absolute;
                 var carclass;
                 var irating;
                 var interval;
+                var carlogo;
+                var position_difference;
+                var pos_indicator;
+            
 
                 var racetime = data[0]["Start Time"];
                 var year     = data[0]["Season Year"];
@@ -268,11 +316,39 @@ position: absolute;
                     carclass = data[1][i]["Car Class"];
                     irating  = data[1][i]["New iRating"];
                     interval = data[1][i]["Interval"];
+
+                    position_difference = startpos - finpos;
+                    if(position_difference < 0){
+                        pos_indicator = "red";
+                    }else{
+                        if(position_difference == 0){
+                            position_difference = position_difference;
+                        }
+                        else if(position_difference > 0){
+                        position_difference = "+"+position_difference;
+                        }
+                        pos_indicator = "green";
+                    }
+
+
+
                     if(interval == "-00.000"){
                         interval = "Winner";
                     }
 
-                    $('.ticker').append('<li><div class="sb"></div><div class="competitor"><div class="name"><span>'+ name +'</span></div><div class="car"><span>'+ car +'</span></div><div class="finpos"><span>'+ finpos +'</span></div><div class="startpos"><span>Started: '+ startpos +'</span></div><div class="car"><span></span></div><div class="carclass"><span>'+ carclass +'</span></div><div class="irating"><span>iR: '+ irating +'</span></div><div class="interval"><span>'+ interval +'</span></div></div></li>');
+                    str = car;
+                    if (str.toLowerCase().indexOf("mercedes") >= 0){
+                        carlogo = "merc";
+
+                    }else if(str.toLowerCase().indexOf("audi") >= 0){
+                        carlogo = "audi";
+
+                    }else if(str.toLowerCase().indexOf("bmw") >= 0){
+                        carlogo = "bmw";
+                    }
+
+
+                    $('.ticker').append('<li><div class="sb '+ pos_indicator +'"></div><div class="competitor"><div class="name"><span>'+ name +'</span></div><div class="car"><span><div class="'+ carlogo +'"></div>'+ car +'</span></div><div class="finpos"><span>'+ finpos +'</span></div><div class="startpos"><span>Started: '+ startpos +'</span></div><div class="car"><span></span></div><div class="carclass"><span>'+ carclass +'</span></div><div class="irating"><span>iR: '+ irating +'</span></div><div class="interval"><span>'+ interval +'</span></div><div class="pos-diff"><span>'+ position_difference +'</span></div></div></li>');
 
                     });
                     
